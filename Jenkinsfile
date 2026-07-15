@@ -10,34 +10,61 @@ pipeline {
             }
         }
 
-        stage('Workspace') {
+        stage('Verify Tools') {
             steps {
                 sh '''
-                echo "Current Workspace"
-                pwd
-                ls -la
+                    echo "===== Tool Versions ====="
+                    python3 --version
+                    pip3 --version
+                    git --version
+                    docker --version
                 '''
             }
         }
 
-        stage('Verify Tools') {
+        stage('Create Virtual Environment') {
             steps {
                 sh '''
-                echo "Python Version"
-                python3 --version
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    python --version
+                '''
+            }
+        }
 
-                echo "Git Version"
-                git --version
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    . venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                '''
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh '''
+                    . venv/bin/activate
+                    python -m pytest -v
                 '''
             }
         }
 
         stage('Finish') {
             steps {
-                echo "Pipeline Completed Successfully"
+                echo 'CI Pipeline Completed Successfully!'
             }
         }
-
     }
 
+    post {
+        success {
+            echo 'Build SUCCESS'
+        }
+
+        failure {
+            echo 'Build FAILED'
+        }
+    }
 }
