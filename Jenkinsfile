@@ -42,6 +42,16 @@ pipeline {
             }
         }
 
+        stage('Verify Tests') {
+            steps {
+                sh '''
+                    echo "===== Tests Directory ====="
+                    ls -la tests
+                    find tests -type f
+                '''
+            }
+        }
+
         stage('Run Tests') {
             steps {
                 sh '''
