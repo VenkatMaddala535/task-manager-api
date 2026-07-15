@@ -51,6 +51,15 @@ pipeline {
             }
         }
 
+        stage('Build Docker Image') {
+            steps {
+                sh '''
+                    docker build -t task-manager-api:${BUILD_NUMBER} .
+                    docker images | grep task-manager-api
+                '''
+            }
+        }
+
         stage('Finish') {
             steps {
                 echo 'CI Pipeline Completed Successfully!'
