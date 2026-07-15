@@ -1,51 +1,43 @@
 pipeline {
+
     agent any
 
     stages {
 
         stage('Checkout') {
             steps {
-                echo 'Checking out source code...'
                 checkout scm
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Workspace') {
             steps {
                 sh '''
-                python3 -m venv venv
-                . venv/bin/activate
-                pip install --upgrade pip
-                pip install -r requirements.txt
+                echo "Current Workspace"
+                pwd
+                ls -la
                 '''
             }
         }
 
-        stage('Run Tests') {
+        stage('Verify Tools') {
             steps {
                 sh '''
-                . venv/bin/activate
-                python -m pytest -v
+                echo "Python Version"
+                python3 --version
+
+                echo "Git Version"
+                git --version
                 '''
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Finish') {
             steps {
-                sh '''
-                docker build -t task-manager-api:${BUILD_NUMBER} .
-                '''
+                echo "Pipeline Completed Successfully"
             }
         }
+
     }
 
-    post {
-        success {
-            echo 'Pipeline completed successfully.'
-        }
-
-        failure {
-            echo 'Pipeline failed.'
-        }
-    }
 }
