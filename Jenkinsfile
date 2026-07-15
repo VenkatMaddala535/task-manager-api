@@ -70,7 +70,10 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-                    docker build -t task-manager-api:${BUILD_NUMBER} .
+                    docker build \
+                    -t task-manager-api:${BUILD_NUMBER} \
+                    -t task-manager-api:latest .
+
                     docker images | grep task-manager-api
                 '''
             }
