@@ -55,7 +55,11 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                    . venv/bin/activate
+                    pwd
+                    ls -la
+                    echo "===== Tests Folder ====="
+                    ls -la tests
+                    find tests -type f
                     python -m pytest -v
                 '''
             }
